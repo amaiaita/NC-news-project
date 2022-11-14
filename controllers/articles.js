@@ -9,9 +9,13 @@ exports.getArticles = (req, res, next) => {
   });
 };
 
-exports.getArticleCommentsById = (req, res, next) => {
+exports.getArticleByID = (req, res, next) => {
   const { article_id } = req.params;
-  obtainArticleCommentsByID(article_id).then((comments) => {
-    res.status(200).send({ comments });
-  });
+  obtainArticleByID(article_id)
+    .then((article) => {
+      res.status(200).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };

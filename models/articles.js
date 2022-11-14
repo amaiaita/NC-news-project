@@ -23,7 +23,28 @@ exports.obtainArticleCommentsByID = (articleId) => {
         SELECT comment_id, votes, created_at, author, body
         FROM comments
         WHERE article_id = $1
-        ORDER BY created_at DESC;
+        ORDER BY created_at DESC;`,
+      [articleId]
+    )
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Invalid ID" });
+      }
+      return rows[0];
+    });
+};
+exports.obtainArticleByID = (articleId) => {
+  if (!Number(articleId)) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request: Invalid Data Type for ID",
+    });
+  }
+  return db
+    .query(
+      `
+        SELECT * FROM articles
+        WHERE article_id = $1;
         `,
       [articleId]
     )
