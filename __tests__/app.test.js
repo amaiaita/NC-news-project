@@ -69,7 +69,6 @@ describe("/api/articles", () => {
         .expect(200)
         .then((res) => {
           const { article } = res.body;
-          expect(article).toBeInstanceOf(Object);
           expect(article).toMatchObject({
             author: "icellusedkars",
             title: "Sony Vaio; or, The Laptop",
@@ -89,7 +88,7 @@ describe("/api/articles", () => {
           expect(body.msg).toBe("Invalid ID");
         });
     });
-    test('should ERROR 400: Bad Request (wrong ID data type) when incorrecvt data type for ID passed', () => {
+    test("should ERROR 400: Bad Request (wrong ID data type) when incorrect data type for ID passed", () => {
       return request(app)
         .get("/api/articles/hello")
         .expect(400)
