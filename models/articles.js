@@ -17,6 +17,9 @@ exports.obtainArticles = () => {
 };
 
 exports.obtainArticleCommentsByID = (articleId) => {
+  if (!Number(articleId)) {
+    return Promise.reject({ status: 400, msg: "Invalid ID data type" });
+  }
   return db
     .query(
       `
@@ -28,11 +31,12 @@ exports.obtainArticleCommentsByID = (articleId) => {
     )
     .then(({ rows }) => {
       if (rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "Invalid ID" });
+        return Promise.reject({ status: 404, msg: "Invalid article ID" });
       }
-      return rows[0];
+      return rows;
     });
 };
+
 exports.obtainArticleByID = (articleId) => {
   if (!Number(articleId)) {
     return Promise.reject({
@@ -49,6 +53,9 @@ exports.obtainArticleByID = (articleId) => {
       [articleId]
     )
     .then(({ rows }) => {
-      return rows;
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Invalid ID" });
+      }
+      return rows[0];
     });
 };
