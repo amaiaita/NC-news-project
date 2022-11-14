@@ -93,21 +93,21 @@ describe("/api/articles", () => {
           });
         });
     });
-    test("should ERROR 404 ID Does not exist", () => {
-      return request(app)
-        .get("/api/articles/1000/comments")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Invalid article ID");
-        });
-    });
-    test("should ERROR 400: Invalid ID data type", () => {
-      return request(app)
-        .get("/api/articles/no/comments")
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Invalid ID data type");
-        });
-    });
+    // test("should ERROR 404 ID Does not exist", () => {
+    //   return request(app)
+    //     .get("/api/articles/1000/comments")
+    //     .expect(404)
+    //     .then(({ body }) => {
+    //       expect(body.msg).toBe("Invalid article ID");
+    //     });
+    // });
+    // test("should ERROR 400: Invalid ID data type", () => {
+    //   return request(app)
+    //     .get("/api/articles/no/comments")
+    //     .expect(400)
+    //     .then(({ body }) => {
+    //       expect(body.msg).toBe("Invalid ID data type");
+    //     });
+    // });
   });
 });
