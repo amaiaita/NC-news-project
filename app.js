@@ -27,7 +27,7 @@ app.use((err, req, res, next) => {
   if (err.code === "23503") {
     res
       .status(400)
-      .send({ msg: "Incorrect data input to one or more comment categories" });
+      .send({ msg: "Incorrect data input to one or more categories" });
   }
   if (err.code === "22P02") {
     res.status(400).send({ msg: "Bad Request: Invalid Data Type for ID" });

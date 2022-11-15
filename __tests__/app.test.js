@@ -196,7 +196,7 @@ describe("/api/articles", () => {
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe(
-            "Incorrect data input to one or more comment categories"
+            "Incorrect data input to one or more categories"
           );
         });
     });
@@ -217,7 +217,7 @@ describe("/api/articles", () => {
 
     test("should ERROR 400: Bad Request (wrong ID data type) when incorrect data type for ID passed", () => {
       const newComment = {
-        username: "amaiaita",
+        username: "butter_bridge",
         body: "wow this article is sick",
       };
 
@@ -227,6 +227,22 @@ describe("/api/articles", () => {
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Bad Request: Invalid Data Type for ID");
+        });
+    });
+    test("should ERROR 400: bad request when non-existent username passed", () => {
+      const newComment = {
+        username: "amaiaita",
+        body: "wow this article is sick",
+      };
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe(
+            "Incorrect data input to one or more categories"
+          );
         });
     });
   });
