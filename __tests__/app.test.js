@@ -156,3 +156,64 @@ describe("/api/articles", () => {
     });
   });
 });
+
+describe.only("PATCH /api/articles/:article_id", () => {
+  test("should PATCH 200: returns updated article for positive vote change", () => {
+    const articleEdit = { inc_votes: 12 };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(articleEdit)
+      .expect(200)
+      .then((res) => {
+        const { article } = res.body;
+        expect(article).toMatchObject({
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: expect.any(String),
+          votes: 112,
+          article_id: 1,
+        });
+      });
+  });
+  test("should PATCH 200: returns updated article for negative vote change", () => {
+    const articleEdit = { inc_votes: -12 };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(articleEdit)
+      .expect(200)
+      .then((res) => {
+        const { article } = res.body;
+        expect(article).toMatchObject({
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: expect.any(String),
+          votes: 88,
+          article_id: 1,
+        });
+      });
+  });
+  test.skip("should ERROR 400: Malformed Body Bad Request", () => {
+    const articleEdit = { title: -12 };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(articleEdit)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Incorrect Request Format");
+      });
+  });
+  test.skip("should ERROR 400: Incorrect input to one or more body categories", () => {
+    const articleEdit = { inc_votes: "hello" };
+    return request(app)
+      .patch("/api/articles/1")
+      .send(articleEdit)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Incorrect data input to one or more categories");
+      });
+  });
+});

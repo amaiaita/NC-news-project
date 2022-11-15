@@ -59,3 +59,20 @@ exports.obtainArticleByID = (articleId) => {
       return rows[0];
     });
 };
+
+exports.editArticleById = (articleId, edit) => {
+  const { inc_votes } = edit;
+  return db
+    .query(
+      `
+  UPDATE articles
+  SET votes = votes + $1
+  WHERE article_id = $2
+  RETURNING *;
+  `,
+      [inc_votes, articleId]
+    )
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};
