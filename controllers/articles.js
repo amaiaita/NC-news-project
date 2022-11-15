@@ -2,6 +2,7 @@ const {
   obtainArticles,
   obtainArticleCommentsByID,
   obtainArticleByID,
+  editArticleById,
   addComment,
 } = require("../models/articles");
 
@@ -31,6 +32,17 @@ exports.getArticleByID = (req, res, next) => {
     });
 };
 
+exports.patchArticleById = (req, res, next) => {
+  const { article_id } = req.params;
+  const edit = req.body;
+  editArticleById(article_id, edit)
+    .then((article) => {
+      res.status(200).send({ article });
+    })
+    .catch((err) => {
+      next(err)
+    });
+};
 exports.postComment = (req, res, next) => {
   const { article_id } = req.params;
   const comment = req.body;
