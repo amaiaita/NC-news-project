@@ -59,3 +59,23 @@ exports.obtainArticleByID = (articleId) => {
       return rows[0];
     });
 };
+
+exports.addComment = (idNumber, commentBody) => {
+  const { username, body } = commentBody;
+  return checkArticleExists(idNumber)
+    .then(() => {
+      return db.query(
+        `
+          INSERT INTO comments
+              (author,body,article_id)
+          VALUES
+              ($1,$2,$3)
+          RETURNING *;
+      `,
+        [username, body, idNumber]
+      );
+    })
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};
