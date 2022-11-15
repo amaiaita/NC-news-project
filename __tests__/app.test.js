@@ -310,7 +310,7 @@ describe("/api/articles", () => {
   });
 });
 
-describe.only("/api/users", () => {
+describe("/api/users", () => {
   describe("GET /api/users", () => {
     test("should GET 200: return array of user objects", () => {
       return request(app)
