@@ -6,6 +6,7 @@ const {
   postComment,
 } = require("./controllers/articles");
 const { getTopics } = require("./controllers/topics");
+const { getUsers } = require("./controllers/users");
 const app = express();
 
 app.use(express.json());
@@ -14,6 +15,7 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleByID);
 app.get("/api/articles/:article_id/comments", getArticleCommentsById);
+app.get("/api/users", getUsers);
 
 app.post("/api/articles/:article_id/comments", postComment);
 
