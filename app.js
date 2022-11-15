@@ -3,6 +3,7 @@ const {
   getArticles,
   getArticleByID,
   getArticleCommentsById,
+  patchArticleById,
   postComment,
 } = require("./controllers/articles");
 const { getTopics } = require("./controllers/topics");
@@ -15,6 +16,8 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleByID);
 app.get("/api/articles/:article_id/comments", getArticleCommentsById);
 
+app.patch("/api/articles/:article_id", patchArticleById);
+
 app.post("/api/articles/:article_id/comments", postComment);
 
 app.use((err, req, res, next) => {
@@ -22,7 +25,7 @@ app.use((err, req, res, next) => {
     res.status(err.status).send({ msg: err.msg });
   }
   if (err.code === "23502") {
-    res.status(400).send({ msg: "Incorrect Comment Format" });
+    res.status(400).send({ msg: "Incorrect Request Format" });
   }
   if (err.code === "23503") {
     res
@@ -30,7 +33,7 @@ app.use((err, req, res, next) => {
       .send({ msg: "Incorrect data input to one or more categories" });
   }
   if (err.code === "22P02") {
-    res.status(400).send({ msg: "Bad Request: Invalid Data Type for ID" });
+    res.status(400).send({ msg: "Bad Request: Invalid Data Type to one or more categories " });
   }
 });
 
