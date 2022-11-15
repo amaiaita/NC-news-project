@@ -155,4 +155,95 @@ describe("/api/articles", () => {
         });
     });
   });
+  describe("POST /api/articles/:article_id/comments", () => {
+    test("should POST 201: responds with created comment ", () => {
+      const newComment = {
+        username: "butter_bridge",
+        body: "wow this article is sick",
+      };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(201)
+        .then((res) => {
+          const { comment } = res.body;
+          expect(comment).toMatchObject({
+            author: "butter_bridge",
+            body: "wow this article is sick",
+            article_id: 1,
+            votes: 0,
+            created_at: expect.any(String),
+          });
+        });
+    });
+
+    test("should ERROR 400:incorrect comment format", () => {
+      const newComment = { username: "butter_bridge" };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Incorrect Comment Format");
+        });
+    });
+
+    test("should ERROR 400: Incorrect input to one or more body categories", () => {
+      const newComment = { username: 13, body: "this article is cool" };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe(
+            "Incorrect data input to one or more categories"
+          );
+        });
+    });
+
+    test("ERROR 404: ID not found when ID that does not exist is passed", () => {
+      const newComment = {
+        username: "butter_bridge",
+        body: "wow this article is sick",
+      };
+      return request(app)
+        .post("/api/articles/900/comments")
+        .send(newComment)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid article ID");
+        });
+    });
+
+    test("should ERROR 400: Bad Request (wrong ID data type) when incorrect data type for ID passed", () => {
+      const newComment = {
+        username: "butter_bridge",
+        body: "wow this article is sick",
+      };
+
+      return request(app)
+        .post("/api/articles/hello/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request: Invalid Data Type for ID");
+        });
+    });
+    test("should ERROR 400: bad request when non-existent username passed", () => {
+      const newComment = {
+        username: "amaiaita",
+        body: "wow this article is sick",
+      };
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe(
+            "Incorrect data input to one or more categories"
+          );
+        });
+    });
+  });
 });
