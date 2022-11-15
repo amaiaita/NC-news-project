@@ -58,7 +58,7 @@ describe("/api/articles", () => {
         .expect(200)
         .then((res) => {
           const { articles } = res.body;
-          expect(articles).toBeSortedBy("created_at",  {  descending: true  });
+          expect(articles).toBeSortedBy("created_at", { descending: true });
         });
     });
   });
@@ -126,6 +126,16 @@ describe("/api/articles", () => {
           expect(res.body.comments).toBeSortedBy("created_at", {
             descending: true,
           });
+        });
+    });
+    test("should GET 200: return empty arr when valid article ID passed that has no comments", () => {
+      return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then((res) => {
+          const { comments } = res.body;
+          expect(comments).toBeInstanceOf(Array);
+          expect(comments.length).toBe(0);
         });
     });
     test("should ERROR 404 ID Does not exist", () => {

@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { checkArticleExists } = require("../utils");
 
 exports.obtainArticles = () => {
   return db
@@ -20,19 +21,18 @@ exports.obtainArticleCommentsByID = (articleId) => {
   if (!Number(articleId)) {
     return Promise.reject({ status: 400, msg: "Invalid ID data type" });
   }
-  return db
-    .query(
-      `
-        SELECT comment_id, votes, created_at, author, body
-        FROM comments
-        WHERE article_id = $1
-        ORDER BY created_at DESC;`,
-      [articleId]
-    )
+  return checkArticleExists(articleId)
+    .then(() => {
+      return db.query(
+        `
+          SELECT comment_id, votes, created_at, author, body
+          FROM comments
+          WHERE article_id = $1
+          ORDER BY created_at DESC;`,
+        [articleId]
+      );
+    })
     .then(({ rows }) => {
-      if (rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "Invalid article ID" });
-      }
       return rows;
     });
 };
