@@ -78,6 +78,12 @@ exports.editArticleById = (articleId, edit) => {
 };
 
 exports.addComment = (idNumber, commentBody) => {
+  if (!Number(idNumber)) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request: Invalid Data Type for ID",
+    });
+  }
   const { username, body } = commentBody;
   return checkArticleExists(idNumber)
     .then(() => {
