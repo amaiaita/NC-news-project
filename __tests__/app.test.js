@@ -97,4 +97,62 @@ describe("/api/articles", () => {
         });
     });
   });
+
+  describe("GET /api/articles/:article_id/comments", () => {
+    test("should GET 200: responds with array of comments for a specific article ID ", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then((res) => {
+          const { comments } = res.body;
+          expect(comments).toBeInstanceOf(Array);
+          expect(comments.length).toBe(11);
+          comments.forEach((comment) => {
+            expect(comment).toMatchObject({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+            });
+          });
+        });
+    });
+    test("should be in DESC created at order ", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.comments).toBeSortedBy("created_at", {
+            descending: true,
+          });
+        });
+    });
+    test("should GET 200: return empty arr when valid article ID passed that has no comments", () => {
+      return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then((res) => {
+          const { comments } = res.body;
+          expect(comments).toBeInstanceOf(Array);
+          expect(comments.length).toBe(0);
+        });
+    });
+    test("should ERROR 404 ID Does not exist", () => {
+      return request(app)
+        .get("/api/articles/1000/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid article ID");
+        });
+    });
+    test("should ERROR 400: Invalid ID data type", () => {
+      return request(app)
+        .get("/api/articles/no/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid ID data type");
+        });
+    });
+  });
 });
