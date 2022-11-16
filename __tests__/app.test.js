@@ -309,3 +309,24 @@ describe("/api/articles", () => {
     });
   });
 });
+
+describe("/api/users", () => {
+  describe("GET /api/users", () => {
+    test("should GET 200: return array of user objects", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then((res) => {
+          const { users } = res.body;
+          expect(users).toBeInstanceOf(Array);
+          users.forEach((user) => {
+            expect(user).toMatchObject({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            });
+          });
+        });
+    });
+  });
+});
