@@ -1,4 +1,5 @@
 const express = require("express");
+const { getApi } = require("./controllers/api");
 const {
   getArticles,
   getArticleByID,
@@ -18,6 +19,7 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleByID);
 app.get("/api/articles/:article_id/comments", getArticleCommentsById);
 app.get("/api/users", getUsers);
+app.get("/api", getApi);
 
 app.patch("/api/articles/:article_id", patchArticleById);
 
@@ -38,11 +40,9 @@ app.use((err, req, res, next) => {
       .send({ msg: "Incorrect data input to one or more categories" });
   }
   if (err.code === "22P02") {
-    res
-      .status(400)
-      .send({
-        msg: "Bad Request: Invalid Data Type to one or more categories ",
-      });
+    res.status(400).send({
+      msg: "Bad Request: Invalid Data Type to one or more categories ",
+    });
   }
 });
 
