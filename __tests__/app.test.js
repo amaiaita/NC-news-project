@@ -80,6 +80,17 @@ describe("/api/articles", () => {
           });
         });
     });
+    test("should GET 200: includes comment count in response", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then((res) => {
+          const { article } = res.body;
+          expect(article).toMatchObject({
+            comment_count: "11",
+          });
+        });
+    });
     test("ERROR 404: ID not found when ID that does not exist is passed", () => {
       return request(app)
         .get("/api/articles/900")
