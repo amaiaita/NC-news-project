@@ -31,3 +31,22 @@ exports.checkTopicExists = (topic) => {
       }
     });
 };
+
+exports.checkCommentExists = (commentId) => {
+  return db
+    .query(
+      `
+    SELECT * FROM comments
+    WHERE comment_id=$1;
+    `,
+      [commentId]
+    )
+    .then((res) => {
+      if (res.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "Invalid Comment ID - This comment does not exist",
+        });
+      }
+    });
+};

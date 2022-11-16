@@ -421,8 +421,26 @@ describe("/api/users", () => {
 
 describe("/api/comments", () => {
   describe("DELETE /api/comments/:comment_id", () => {
-    // test("should DELETE 204: no content when successfully deleted", () => {
-    //   return request(app).delete("/api/comments/3").expect(204);
-    // });
+    test("should DELETE 204: no content when successfully deleted", () => {
+      return request(app).delete("/api/comments/3").expect(204);
+    });
+    test("should ERROR 404: id does not exist", () => {
+      return request(app)
+        .delete("/api/comments/199")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe(
+            "Invalid Comment ID - This comment does not exist"
+          );
+        });
+    });
+    test("should ERROR 400: Invalid ID data type", () => {
+      return request(app)
+        .delete("/api/comments/hello")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid Comment ID - ID is not a number");
+        });
+    });
   });
 });
