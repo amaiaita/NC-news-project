@@ -407,3 +407,11 @@ describe("/api/users", () => {
     });
   });
 });
+
+describe("/api/comments", () => {
+  describe("DELETE /api/comments/:comment_id", () => {
+    // test("should DELETE 204: no content when successfully deleted", () => {
+    //   return request(app).delete("/api/comments/3").expect(204);
+    // });
+  });
+});
