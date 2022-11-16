@@ -6,6 +6,7 @@ const {
   patchArticleById,
   postComment,
 } = require("./controllers/articles");
+const { deleteComment } = require("./controllers/comments");
 const { getTopics } = require("./controllers/topics");
 const { getUsers } = require("./controllers/users");
 const app = express();
@@ -22,6 +23,8 @@ app.patch("/api/articles/:article_id", patchArticleById);
 
 app.post("/api/articles/:article_id/comments", postComment);
 
+app.delete("/api/comments/:comment_id", deleteComment);
+
 app.use((err, req, res, next) => {
   if (err.msg && err.status) {
     res.status(err.status).send({ msg: err.msg });
@@ -35,7 +38,11 @@ app.use((err, req, res, next) => {
       .send({ msg: "Incorrect data input to one or more categories" });
   }
   if (err.code === "22P02") {
-    res.status(400).send({ msg: "Bad Request: Invalid Data Type to one or more categories " });
+    res
+      .status(400)
+      .send({
+        msg: "Bad Request: Invalid Data Type to one or more categories ",
+      });
   }
 });
 
