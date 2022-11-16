@@ -9,17 +9,12 @@ exports.removeComment = (commentId) => {
     });
   }
   return checkCommentExists(commentId).then(() => {
-    return db
-      .query(
-        `
+    return db.query(
+      `
           DELETE FROM comments
-          WHERE comment_id = $1
-          RETURNING *;
+          WHERE comment_id = $1;
           `,
-        [commentId]
-      )
-      .then((res) => {
-        return res.rows;
-      });
+      [commentId]
+    );
   });
 };
