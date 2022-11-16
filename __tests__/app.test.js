@@ -61,6 +61,83 @@ describe("/api/articles", () => {
           expect(articles).toBeSortedBy("created_at", { descending: true });
         });
     });
+    describe("topic query", () => {
+      test("should GET 200: response filters by topic when topic query given", () => {
+        return request(app)
+          .get("/api/articles?topic=mitch")
+          .expect(200)
+          .then((res) => {
+            const { articles } = res.body;
+            expect(articles.length).toBe(11);
+            articles.forEach((article) => {
+              expect(article).toMatchObject({
+                topic: "mitch",
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                comment_count: expect.any(String),
+              });
+            });
+          });
+      });
+      test("should GET 200: return empty array when topic that exists but does not have any articles passed", () => {
+        return request(app)
+          .get("/api/articles?topic=paper")
+          .expect(200)
+          .then((res) => {
+            const { articles } = res.body;
+            expect(articles.length).toBe(0);
+          });
+      });
+      test("should ERROR 404: when topic that does not exist passed", () => {
+        return request(app)
+          .get("/api/articles?topic=hello")
+          .expect(404)
+          .then((res) => {
+            expect(res.body.msg).toBe("topic does not exist");
+          });
+      });
+    });
+    describe("sort by query", () => {
+      test("should GET 200: sort by correct column", () => {
+        return request(app)
+          .get("/api/articles?sort_by=author")
+          .expect(200)
+          .then((res) => {
+            const { articles } = res.body;
+            expect(articles).toBeSortedBy("author", { descending: true });
+          });
+      });
+      test("should ERROR:400: if unacceptable sort by query passed", () => {
+        return request(app)
+          .get("/api/articles?sort_by=unicorn")
+          .expect(400)
+          .then((res) => {
+            expect(res.body.msg).toBe("unacceptable sort by query");
+          });
+      });
+    });
+    describe("order query", () => {
+      test("should GET 200: return in ascending order when ASC order given", () => {
+        return request(app)
+          .get("/api/articles?order=asc")
+          .expect(200)
+          .then((res) => {
+            const { articles } = res.body;
+            expect(articles).toBeSortedBy("created_at");
+          });
+      });
+      test("should ERROR:400: if unacceptable order query passed", () => {
+        return request(app)
+          .get("/api/articles?order=unicorn")
+          .expect(400)
+          .then((res) => {
+            expect(res.body.msg).toBe("unacceptable order query");
+          });
+      });
+    });
   });
   describe("GET /api/articles/:article_id", () => {
     test("should GET 200: responds with article object for correct ID", () => {

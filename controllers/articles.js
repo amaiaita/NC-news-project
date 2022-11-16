@@ -7,9 +7,12 @@ const {
 } = require("../models/articles");
 
 exports.getArticles = (req, res, next) => {
-  obtainArticles().then((articles) => {
-    res.status(200).send({ articles });
-  });
+  const { topic, sort_by, order } = req.query;
+  obtainArticles(topic, sort_by,order)
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch((err) => next(err));
 };
 
 exports.getArticleCommentsById = (req, res, next) => {
@@ -40,7 +43,7 @@ exports.patchArticleById = (req, res, next) => {
       res.status(200).send({ article });
     })
     .catch((err) => {
-      next(err)
+      next(err);
     });
 };
 exports.postComment = (req, res, next) => {
