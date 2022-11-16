@@ -82,13 +82,21 @@ describe("/api/articles", () => {
             });
           });
       });
-      test("should GET 200: responds with empty array if topic that doesnt exist passed", () => {
+      test("should GET 200: return empty array when topic that exists but does not have any articles passed", () => {
         return request(app)
-          .get("/api/articles?topic=hello")
+          .get("/api/articles?topic=paper")
           .expect(200)
           .then((res) => {
             const { articles } = res.body;
             expect(articles.length).toBe(0);
+          });
+      });
+      test("should ERROR 404: when topic that does not exist passed", () => {
+        return request(app)
+          .get("/api/articles?topic=hello")
+          .expect(404)
+          .then((res) => {
+            expect(res.body.msg).toBe("topic does not exist");
           });
       });
     });
@@ -111,8 +119,8 @@ describe("/api/articles", () => {
           });
       });
     });
-    describe('order query', () => {
-      test('should GET 200: return in ascending order when ASC order given', () => {
+    describe("order query", () => {
+      test("should GET 200: return in ascending order when ASC order given", () => {
         return request(app)
           .get("/api/articles?order=asc")
           .expect(200)

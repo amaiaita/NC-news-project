@@ -1,5 +1,5 @@
 const db = require("../db/connection");
-const { checkArticleExists } = require("../utils");
+const { checkArticleExists, checkTopicExists } = require("../utils");
 
 exports.obtainArticles = (topic, sortby = "created_at", order = "desc") => {
   let topicStatement = "";
@@ -24,21 +24,23 @@ exports.obtainArticles = (topic, sortby = "created_at", order = "desc") => {
     topicStatement = "WHERE topic = $1";
     queryValues.push(topic);
   }
-  return db
-    .query(
-      `   
-        SELECT articles.author, articles.title, articles.article_id, topic, articles.created_at, articles.votes, COUNT(comment_id) AS comment_count
-        FROM articles
-        LEFT JOIN comments ON comments.article_id=articles.article_id
-        ${topicStatement}
-        GROUP BY articles.article_id
-        ORDER BY ${sortby} ${order};
-    `,
-      queryValues
-    )
-    .then((res) => {
-      return res.rows;
-    });
+  return checkTopicExists(topic).then(() => {
+    return db
+      .query(
+        `   
+          SELECT articles.author, articles.title, articles.article_id, topic, articles.created_at, articles.votes, COUNT(comment_id) AS comment_count
+          FROM articles
+          LEFT JOIN comments ON comments.article_id=articles.article_id
+          ${topicStatement}
+          GROUP BY articles.article_id
+          ORDER BY ${sortby} ${order};
+      `,
+        queryValues
+      )
+      .then((res) => {
+        return res.rows;
+      });
+  });
 };
 
 exports.obtainArticleCommentsByID = (articleId) => {
