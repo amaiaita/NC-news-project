@@ -1,20 +1,46 @@
 const db = require("../db/connection");
-const { checkArticleExists } = require("../utils");
+const { checkArticleExists, checkTopicExists } = require("../utils");
 
-exports.obtainArticles = () => {
-  return db
-    .query(
-      `   
-        SELECT articles.author, articles.title, articles.article_id, topic, articles.created_at, articles.votes, COUNT(comment_id) AS comment_count
-        FROM articles
-        LEFT JOIN comments ON comments.article_id=articles.article_id
-        GROUP BY articles.article_id
-        ORDER BY articles.created_at DESC;
-    `
-    )
-    .then((res) => {
-      return res.rows;
-    });
+exports.obtainArticles = (topic, sortby = "created_at", order = "desc") => {
+  let topicStatement = "";
+  let queryValues = [];
+  const acceptedOrders = [
+    "topic",
+    "author",
+    "title",
+    "article_id",
+    "created_at",
+    "votes",
+    "comment_count",
+  ];
+  const acceptedSort = ["asc", "desc"];
+  if (!acceptedOrders.includes(sortby)) {
+    return Promise.reject({ status: 400, msg: "unacceptable sort by query" });
+  }
+  if (!acceptedSort.includes(order)) {
+    return Promise.reject({ status: 400, msg: "unacceptable order query" });
+  }
+  if (topic) {
+    topicStatement = "WHERE topic = $1";
+    queryValues.push(topic);
+  }
+  return checkTopicExists(topic).then(() => {
+    return db
+      .query(
+        `   
+          SELECT articles.author, articles.title, articles.article_id, topic, articles.created_at, articles.votes, COUNT(comment_id) AS comment_count
+          FROM articles
+          LEFT JOIN comments ON comments.article_id=articles.article_id
+          ${topicStatement}
+          GROUP BY articles.article_id
+          ORDER BY ${sortby} ${order};
+      `,
+        queryValues
+      )
+      .then((res) => {
+        return res.rows;
+      });
+  });
 };
 
 exports.obtainArticleCommentsByID = (articleId) => {
