@@ -418,7 +418,7 @@ describe("/api/users", () => {
         });
     });
   });
-  describe.only("GET /api/users/:username", () => {
+  describe("GET /api/users/:username", () => {
     test("should GET 200: responds with user object", () => {
       return request(app)
         .get("/api/users/butter_bridge")
@@ -489,6 +489,71 @@ describe("/api/comments", () => {
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Invalid Comment ID - ID is not a number");
+        });
+    });
+  });
+  describe.only("PATCH /api/comments/:comment_id", () => {
+    test("should PATCH 200: responds with updated comment ", () => {
+      const commentEdit = { inc_votes: 12 };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(commentEdit)
+        .expect(200)
+        .then((res) => {
+          const { comment } = res.body;
+          expect(comment).toMatchObject({
+            body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            created_at: expect.any(String),
+            votes: 28,
+            article_id: 9,
+            author: "butter_bridge",
+          });
+        });
+    });
+    test("should ERROR 400: if malformed body", () => {
+      const commentEdit = { title: -12 };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(commentEdit)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Incorrect Request Format");
+        });
+    });
+    test("should ERROR 400: Incorrect input to one or more body categories", () => {
+      const commentEdit = { inc_votes: "hello" };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(commentEdit)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe(
+            "Bad Request: Invalid Data Type to one or more categories "
+          );
+        });
+    });
+    test("should ERROR 404: ID Not Found", () => {
+      const commentEdit = { inc_votes: 3 };
+      return request(app)
+        .patch("/api/comments/99")
+        .send(commentEdit)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe(
+            "Invalid Comment ID - This comment does not exist"
+          );
+        });
+    });
+    test('should ERROR 400: Incorrect ID Data Type', () => {
+      const commentEdit = { inc_votes: 3 };
+      return request(app)
+        .patch("/api/comments/hello")
+        .send(commentEdit)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe(
+            "Invalid Comment ID - ID is not a number"
+          );
         });
     });
   });
