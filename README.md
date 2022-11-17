@@ -59,3 +59,6 @@ This command uses jest to run the test files in this repository where \_\_\_ is 
 ```
 npm run test ___
 ```
+
+# Versions of packages required
+This project was created using: jest version ^27.5.1 and psql version 14.5. Please use these versions (or newer) to ensure full functionality.
