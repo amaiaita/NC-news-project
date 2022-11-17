@@ -61,4 +61,5 @@ npm run test ___
 ```
 
 # Versions of packages required
-This project was created using: jest version ^27.5.1 and psql version 14.5. Please use these versions (or newer) to ensure full functionality.
+
+This project was created using: node version 19.0.0, jest version ^27.5.1 and psql version 14.5. Please use these versions (or newer) to ensure full functionality.
