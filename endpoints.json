@@ -10,7 +10,7 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all topics",
+    "description": "serves an array of all articles",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -20,6 +20,83 @@
           "author": "weegembump",
           "body": "Text from the article..",
           "created_at": 1527695953341
+        }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an article object of the article with ID given",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "author": "icellusedkars",
+        "title": "Sony Vaio; or, The Laptop",
+        "article_id": 2,
+        "topic": "mitch",
+        "created_at": 1527695953341,
+        "votes": 0,
+        "body": "article content",
+        "comment_count": 13
+      }
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of comments for that article in descending date order",
+    "queries": [],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 2,
+          "votes": 10,
+          "created_at": 1527695953341,
+          "author": "icellusedkars",
+          "body": "this is a comment"
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "adds comment with given article id and serves the given comment body (needs a given username and body)",
+    "queries": [],
+    "exampleBody": {
+      "username": "butter_bridge",
+      "body": "wow this article is sick"
+    },
+    "exampleResponse": {
+      "comment": {
+        "author": "butter_bridge",
+        "body": "wow this article is sick",
+        "article_id": 1,
+        "votes": 0,
+        "created_at": 1527695953341
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "edits vote count on given article by given amount (given as inc_votes in body)",
+    "queries": [],
+    "exampleBody": { "inc_votes": 12 },
+    "exampleResponse": {
+      "article": {
+        "title": "Living in the shadow of a great man",
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "body": "I find this existence challenging",
+        "created_at": 1527695953341,
+        "votes": 112,
+        "article_id": 1
+      }
+    }
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "amaiaita",
+          "name": "Amaia",
+          "avatar_url": "picturelink.com"
         }
       ]
     }
