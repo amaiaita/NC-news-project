@@ -15,7 +15,6 @@ const config =
         connectionString: process.env.DATABASE_URL,
       }
     : {};
-console.log(config)
 const db = new Pool(config);
 
 module.exports = db;
