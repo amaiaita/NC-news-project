@@ -190,7 +190,7 @@ describe("/api/articles", () => {
           .get("/api/articles?p=unicorn")
           .expect(400)
           .then((res) => {
-            expect(res.body.msg).toBe("unacceptable page number query");
+            expect(res.body.msg).toBe("unacceptable page query");
           });
       });
     });
