@@ -69,7 +69,6 @@ describe("/api/articles", () => {
           .expect(200)
           .then((res) => {
             const { articles } = res.body;
-            expect(articles.length).toBe(11);
             articles.forEach((article) => {
               expect(article).toMatchObject({
                 topic: "mitch",
@@ -136,6 +135,62 @@ describe("/api/articles", () => {
           .expect(400)
           .then((res) => {
             expect(res.body.msg).toBe("unacceptable order query");
+          });
+      });
+    });
+    describe("limit query", () => {
+      test("should GET 200: responds with right number of articles for limit", () => {
+        return request(app)
+          .get("/api/articles?limit=3")
+          .expect(200)
+          .then((res) => {
+            const { articles } = res.body;
+            expect(articles.length).toBe(3);
+          });
+      });
+      test("should GET 200: responds with 10 articles when no limit given", () => {
+        return request(app)
+          .get("/api/articles")
+          .expect(200)
+          .then((res) => {
+            const { articles } = res.body;
+            expect(articles.length).toBe(10);
+          });
+      });
+      test("should ERROR:400: if unacceptable limit query passed", () => {
+        return request(app)
+          .get("/api/articles?limit=no")
+          .expect(400)
+          .then((res) => {
+            expect(res.body.msg).toBe("unacceptable limit query");
+          });
+      });
+      test('should GET 200: returns all of the articles if limit higher than nr of articles', () => {
+        return request(app)
+          .get("/api/articles?limit=300")
+          .expect(200)
+          .then((res) => {
+            const { articles } = res.body;
+            expect(articles.length).toBe(12);
+          });
+      });
+    });
+    describe('page query', () => {
+      test('should GET 200: returns correct page', () => {
+        return request(app)
+          .get("/api/articles?p=2")
+          .expect(200)
+          .then((res) => {
+            const { articles } = res.body;
+            expect(articles.length).toBe(2);
+          });
+      });
+      test("should ERROR:400: if unacceptable page query passed", () => {
+        return request(app)
+          .get("/api/articles?p=unicorn")
+          .expect(400)
+          .then((res) => {
+            expect(res.body.msg).toBe("unacceptable page number query");
           });
       });
     });

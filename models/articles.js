@@ -1,7 +1,12 @@
 const db = require("../db/connection");
 const { checkArticleExists, checkTopicExists } = require("../utils");
 
-exports.obtainArticles = (topic, sortby = "created_at", order = "desc") => {
+exports.obtainArticles = (
+  topic,
+  sortby = "created_at",
+  order = "desc",
+  limit = 10, p=1
+) => {
   let topicStatement = "";
   let queryValues = [];
   const acceptedOrders = [
@@ -19,6 +24,12 @@ exports.obtainArticles = (topic, sortby = "created_at", order = "desc") => {
   }
   if (!acceptedSort.includes(order)) {
     return Promise.reject({ status: 400, msg: "unacceptable order query" });
+  }
+  if (!Number(limit)){
+    return Promise.reject({ status: 400, msg: "unacceptable limit query" });
+  }
+  if (!Number(p)){
+    return Promise.reject({ status: 400, msg: "unacceptable page query" });
   }
   if (topic) {
     topicStatement = "WHERE topic = $1";
@@ -38,7 +49,8 @@ exports.obtainArticles = (topic, sortby = "created_at", order = "desc") => {
         queryValues
       )
       .then((res) => {
-        return res.rows;
+        const limited = res.rows.slice((p-1)*limit, Number(limit)*p);
+        return limited;
       });
   });
 };
@@ -146,7 +158,7 @@ exports.addArticle = (articleBody) => {
       [author, title, body, topic]
     )
     .then((res) => {
-      res.rows[0].comment_count = 0
+      res.rows[0].comment_count = 0;
       return res.rows[0];
     });
 };
