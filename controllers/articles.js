@@ -4,11 +4,12 @@ const {
   obtainArticleByID,
   editArticleById,
   addComment,
+  addArticle,
 } = require("../models/articles");
 
 exports.getArticles = (req, res, next) => {
   const { topic, sort_by, order } = req.query;
-  obtainArticles(topic, sort_by,order)
+  obtainArticles(topic, sort_by, order)
     .then((articles) => {
       res.status(200).send({ articles });
     })
@@ -56,4 +57,13 @@ exports.postComment = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+exports.postArticle = (req, res, next) => {
+  const article = req.body;
+  addArticle(article)
+    .then((newArticle) => {
+      res.status(201).send({ article: newArticle });
+    })
+    .catch((err) => next(err));
 };

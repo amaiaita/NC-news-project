@@ -131,3 +131,22 @@ exports.addComment = (idNumber, commentBody) => {
       return rows[0];
     });
 };
+
+exports.addArticle = (articleBody) => {
+  const { author, title, body, topic } = articleBody;
+  return db
+    .query(
+      `
+    INSERT INTO articles
+      (author,title,body,topic)
+    VALUES 
+      ($1,$2,$3,$4)
+    RETURNING *;
+    `,
+      [author, title, body, topic]
+    )
+    .then((res) => {
+      res.rows[0].comment_count = 0
+      return res.rows[0];
+    });
+};
