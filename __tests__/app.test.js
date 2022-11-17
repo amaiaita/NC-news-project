@@ -186,7 +186,6 @@ describe("/api/articles", () => {
         });
     });
   });
-
   describe("GET /api/articles/:article_id/comments", () => {
     test("should GET 200: responds with array of comments for a specific article ID ", () => {
       return request(app)
@@ -397,6 +396,64 @@ describe("/api/articles", () => {
         });
     });
   });
+  describe("POST /api/articles", () => {
+    test("should POST 201: responds with added article", () => {
+      const newArticle = {
+        author: "butter_bridge",
+        title: "The World is ending!",
+        body: "climate change is going to end the world",
+        topic: "paper",
+      };
+      return request(app)
+        .post("/api/articles")
+        .send(newArticle)
+        .expect(201)
+        .then((res) => {
+          const { article } = res.body;
+          expect(article).toMatchObject({
+            author: "butter_bridge",
+            title: "The World is ending!",
+            body: "climate change is going to end the world",
+            topic: "paper",
+            article_id: expect.any(Number),
+            votes: 0,
+            created_at: expect.any(String),
+            comment_count: 0,
+          });
+        });
+    });
+    test("should ERROR 400: if body does not have necessary ifnormation", () => {
+      const newArticle = {
+        author: "butter_bridge",
+        title: "The World is ending!",
+        topic: "paper",
+      };
+      return request(app)
+        .post("/api/articles")
+        .send(newArticle)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Incorrect Request Format");
+        });
+    });
+    test("should ERROR 400: Author does not exist", () => {
+      const newArticle = {
+        author: "amaiaita",
+        title: "The World is ending!",
+        body: "climate change is going to end the world",
+        topic: "paper",
+      };
+      return request(app)
+        .post("/api/articles")
+        .send(newArticle)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe(
+            "Incorrect data input to one or more categories"
+          );
+        });
+    });
+  });
 });
 
 describe("/api/users", () => {
@@ -492,7 +549,7 @@ describe("/api/comments", () => {
         });
     });
   });
-  describe.only("PATCH /api/comments/:comment_id", () => {
+  describe("PATCH /api/comments/:comment_id", () => {
     test("should PATCH 200: responds with updated comment ", () => {
       const commentEdit = { inc_votes: 12 };
       return request(app)
@@ -544,16 +601,14 @@ describe("/api/comments", () => {
           );
         });
     });
-    test('should ERROR 400: Incorrect ID Data Type', () => {
+    test("should ERROR 400: Incorrect ID Data Type", () => {
       const commentEdit = { inc_votes: 3 };
       return request(app)
         .patch("/api/comments/hello")
         .send(commentEdit)
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe(
-            "Invalid Comment ID - ID is not a number"
-          );
+          expect(body.msg).toBe("Invalid Comment ID - ID is not a number");
         });
     });
   });
