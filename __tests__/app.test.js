@@ -62,6 +62,15 @@ describe("/api/articles", () => {
           expect(articles).toBeSortedBy("created_at", { descending: true });
         });
     });
+    test("should GET 200: response includes total number of articles", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((res) => {
+          const { total_count } = res.body;
+          expect(total_count).toBe(12);
+        });
+    });
     describe("topic query", () => {
       test("should GET 200: response filters by topic when topic query given", () => {
         return request(app)
@@ -165,7 +174,7 @@ describe("/api/articles", () => {
             expect(res.body.msg).toBe("unacceptable limit query");
           });
       });
-      test('should GET 200: returns all of the articles if limit higher than nr of articles', () => {
+      test("should GET 200: returns all of the articles if limit higher than nr of articles", () => {
         return request(app)
           .get("/api/articles?limit=300")
           .expect(200)
@@ -175,8 +184,8 @@ describe("/api/articles", () => {
           });
       });
     });
-    describe('page query', () => {
-      test('should GET 200: returns correct page', () => {
+    describe("page query", () => {
+      test("should GET 200: returns correct page", () => {
         return request(app)
           .get("/api/articles?p=2")
           .expect(200)

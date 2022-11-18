@@ -5,7 +5,8 @@ exports.obtainArticles = (
   topic,
   sortby = "created_at",
   order = "desc",
-  limit = 10, p=1
+  limit = 10,
+  p = 1
 ) => {
   let topicStatement = "";
   let queryValues = [];
@@ -25,10 +26,10 @@ exports.obtainArticles = (
   if (!acceptedSort.includes(order)) {
     return Promise.reject({ status: 400, msg: "unacceptable order query" });
   }
-  if (!Number(limit)){
+  if (!Number(limit)) {
     return Promise.reject({ status: 400, msg: "unacceptable limit query" });
   }
-  if (!Number(p)){
+  if (!Number(p)) {
     return Promise.reject({ status: 400, msg: "unacceptable page query" });
   }
   if (topic) {
@@ -49,8 +50,9 @@ exports.obtainArticles = (
         queryValues
       )
       .then((res) => {
-        const limited = res.rows.slice((p-1)*limit, Number(limit)*p);
-        return limited;
+        const total_count = res.rows.length;
+        const limited = res.rows.slice((p - 1) * limit, Number(limit) * p);
+        return [limited, total_count];
       });
   });
 };
