@@ -29,6 +29,31 @@ describe("/api/topics", () => {
         });
     });
   });
+  describe("POST /api/topics", () => {
+    test("should POST 201: responds with topic object", () => {
+      const newTopic = { slug: "astronomy", description: "all things space" };
+      return request(app)
+        .post("/api/topics")
+        .send(newTopic)
+        .expect(201)
+        .then((res) => {
+          expect(res.body.topic).toMatchObject({
+            slug: "astronomy",
+            description: "all things space",
+          });
+        });
+    });
+    test("should ERROR 400: malformed object", () => {
+      const newTopic = { description: "all things space" };
+      return request(app)
+        .post("/api/articles")
+        .send(newTopic)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Incorrect Request Format");
+        });
+    });
+  });
 });
 
 describe("/api/articles", () => {
