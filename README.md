@@ -9,7 +9,7 @@ Create .env.development and .env.test files and put PGDATABASE=<database_name> i
 # Hosted Version of this Database
 
 The link to this database is hosted on ElephantSQL is:
-<postgres://jkhewrty:lu6qIuNUmU08XmOl6pEEU4_mSuyjrYc6@lucky.db.elephantsql.com/jkhewrty>
+<postgres://jvascwza:Z_VDAAsY0d_5tnh1A8UoSzVjqr0ErM-L@lucky.db.elephantsql.com/jvascwza>
 
 # Set Up Instructions
 
