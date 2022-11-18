@@ -29,7 +29,7 @@ describe("/api/topics", () => {
         });
     });
   });
-  describe("POST /api/topics", () => {
+  describe.only("POST /api/topics", () => {
     test("should POST 201: responds with topic object", () => {
       const newTopic = { slug: "astronomy", description: "all things space" };
       return request(app)
@@ -46,7 +46,7 @@ describe("/api/topics", () => {
     test("should ERROR 400: malformed object", () => {
       const newTopic = { description: "all things space" };
       return request(app)
-        .post("/api/articles")
+        .post("/api/topics")
         .send(newTopic)
         .expect(400)
         .then(({ body }) => {
