@@ -29,7 +29,7 @@ describe("/api/topics", () => {
         });
     });
   });
-  describe.only("POST /api/topics", () => {
+  describe("POST /api/topics", () => {
     test("should POST 201: responds with topic object", () => {
       const newTopic = { slug: "astronomy", description: "all things space" };
       return request(app)
